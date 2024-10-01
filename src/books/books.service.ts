@@ -22,8 +22,26 @@ export class BooksService {
   async create(createBookDto: CreateBookDto) {
     const book = new Book();
     book.title = createBookDto.title;
-    book.fileUrl = createBookDto.fileUrl;
     book.author = createBookDto.authorId;
+
+    // Save the text file locally
+    const fs = require('fs');
+    const path = require('path');
+    const publicDir = path.join(process.cwd(), 'public');
+    const fileName = `${Date.now()}_${createBookDto.title.replace(/\s+/g, '_')}.txt`;
+    const filePath = path.join(publicDir, fileName);
+
+    // Ensure the public directory exists
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir, { recursive: true });
+    }
+
+    // Write the file
+    fs.writeFileSync(filePath, createBookDto.fileContent);
+
+    // Save the local file path instead of fileUrl
+    book.fileUrl = `/public/${fileName}`;
+
     return await this.booksRepository.save(book);
   }
 

@@ -18,4 +18,8 @@ export class CreateBookDto {
     @IsNotEmpty()
     authorId: AppUser;
 
+    @IsString()
+    @IsNotEmpty()
+    fileContent: string;
+
 }
