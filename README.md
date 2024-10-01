@@ -1,3 +1,5 @@
+<img src="/diagram-export-10-1-2024-1_31_08-AM.png"></img>
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
