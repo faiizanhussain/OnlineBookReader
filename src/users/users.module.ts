@@ -7,6 +7,7 @@ import { Role } from './entities/role.entity';
 import { UserState } from './entities/userState.entity';
 // import { UserCollection } from './entities/userCollection.entity';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([AppUser, Role, UserState])],
   controllers: [UsersController],

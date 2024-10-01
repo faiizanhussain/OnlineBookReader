@@ -6,10 +6,13 @@ import { Repository } from 'typeorm';
 import { Book } from './entities/book.entity';
 import { UpdateBookStatusDto } from './dto/updateBookStatus.dto';
 import { BookState } from './entities/bookState.entity';
+import { AppUser } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BooksService {
   constructor(
+    @InjectRepository(AppUser)
+    private readonly usersRepository: Repository<AppUser>,
     @InjectRepository(Book)
     private readonly booksRepository: Repository<Book>,
     @InjectRepository(BookState)
@@ -41,19 +44,16 @@ export class BooksService {
   }
 
   async updateStatus(id: string, updateBookStatusDto: UpdateBookStatusDto) {
-    const book = await this.booksRepository.findOne({ where: { id } });
-    console.log(book.id);
-    const bookState = await this.bookStateRepository.findOne({ where: { id } });
-    if (!bookState) {
-      // if bookState not found, create a new one
-      const newBookState = new BookState();
-      newBookState.book = updateBookStatusDto.bookId;
-      newBookState.user = updateBookStatusDto.userId;
-      newBookState.readingStatus = updateBookStatusDto.status;
-      return await this.bookStateRepository.save(newBookState);
-    }
-    
-    Object.assign(bookState, updateBookStatusDto);
-    return await this.bookStateRepository.save(bookState);
+  //  Post bookState
+  /*
+   While we've both approaches i.e. Patching & Posting, We use the approach to post the bookState to the database to track the reading behavior of the user.
+   This will help us to track the progress of the user for a particular book.
+  */
+  const bookState = new BookState();
+  bookState.book = await this.booksRepository.findOne({ where: { id } });
+  bookState.user = await this.usersRepository.findOne({ where: { id: updateBookStatusDto.readerId.id } });
+  bookState.readingStatus = updateBookStatusDto.readingStatus;
+  bookState.lastReadCharacter = updateBookStatusDto.lastReadCharacter;
+  return await this.bookStateRepository.save(bookState);
   }
 }

@@ -33,7 +33,7 @@ export class BooksController {
     return this.booksService.remove(id);
   }
 
-  @Patch('/:id/status')
+  @Post('/:id/status')
   updateStatus(@Param('id') bookId: string, @Body() updateBookStatusDto: UpdateBookStatusDto) {
     return this.booksService.updateStatus(bookId, updateBookStatusDto);
   }

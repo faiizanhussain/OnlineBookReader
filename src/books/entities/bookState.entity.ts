@@ -15,11 +15,11 @@ export class BookState {
   @JoinColumn({ name: 'book_id'})
   book: Book;
 
-  @Column({ default: false })
+  @Column({ name: 'reading_status' })
   readingStatus: boolean;
 
-  @Column({ nullable: true })
-  lastReadCharacter?: string;
+  @Column({ name: 'last_read_character', nullable: true })
+  lastReadCharacter: string;
 
   @CreateDateColumn()
   createdAt: Date;
