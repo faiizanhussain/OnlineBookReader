@@ -7,6 +7,9 @@ import { Book } from './entities/book.entity';
 import { UpdateBookStatusDto } from './dto/updateBookStatus.dto';
 import { BookState } from './entities/bookState.entity';
 import { AppUser } from 'src/users/entities/user.entity';
+import { UserState } from 'src/users/entities/userState.entity';
+import { Request } from 'express';
+import { request } from 'http';
 
 @Injectable()
 export class BooksService {
@@ -17,31 +20,15 @@ export class BooksService {
     private readonly booksRepository: Repository<Book>,
     @InjectRepository(BookState)
     private readonly bookStateRepository: Repository<BookState>,
+    @InjectRepository(UserState)
+    private readonly userStateRepository: Repository<UserState>,
   ) {}
 
   async create(createBookDto: CreateBookDto) {
     const book = new Book();
     book.title = createBookDto.title;
     book.author = createBookDto.authorId;
-
-    // Save the text file locally
-    const fs = require('fs');
-    const path = require('path');
-    const publicDir = path.join(process.cwd(), 'public');
-    const fileName = `${Date.now()}_${createBookDto.title.replace(/\s+/g, '_')}.txt`;
-    const filePath = path.join(publicDir, fileName);
-
-    // Ensure the public directory exists
-    if (!fs.existsSync(publicDir)) {
-      fs.mkdirSync(publicDir, { recursive: true });
-    }
-
-    // Write the file
-    fs.writeFileSync(filePath, createBookDto.fileContent);
-
-    // Save the local file path instead of fileUrl
-    book.fileUrl = `/public/${fileName}`;
-
+    book.fileContent = createBookDto.fileContent;
     return await this.booksRepository.save(book);
   }
 
@@ -49,7 +36,7 @@ export class BooksService {
     return await this.booksRepository.find();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, request: Request) {
     return await this.booksRepository.findOne({ where: { id } });
   }
 

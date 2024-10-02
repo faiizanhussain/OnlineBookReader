@@ -14,12 +14,15 @@ export class Book {
   @ManyToOne(() => AppUser, user => user.books, { nullable: false })
   author: AppUser;
 
-  @Column()
+  @Column({ name: 'file_url', nullable: true })
   @IsOptional()
   fileUrl: string;
 
   // @ManyToOne(() => UserCollection, (collection) => collection.books)
   // collection: UserCollection;
+
+  @Column({ type: 'text' , name: 'file_content', nullable: true})
+  fileContent: string;
 
   @CreateDateColumn()
   createdAt: Date;

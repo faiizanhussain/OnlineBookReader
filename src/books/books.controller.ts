@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { UpdateBookStatusDto } from './dto/updateBookStatus.dto';
+import { ReadBookService } from './readBook.service';
+import { Request } from 'express';
 
 @Controller('books')
 export class BooksController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(private readonly booksService: BooksService, private readonly readBookService: ReadBookService) {}
 
   @Post()
   create(@Body() createBookDto: CreateBookDto) {
@@ -19,8 +21,13 @@ export class BooksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksService.findOne(id);
+  findOne(@Param('id') id: string, @Req() request: Request) {
+    return this.booksService.findOne(id, request);
+  }
+
+  @Get(':id/read')
+  readBook(@Param('id') id: string, @Req() request: Request) {
+    return this.readBookService.readBook(id, request);
   }
 
   @Patch(':id')

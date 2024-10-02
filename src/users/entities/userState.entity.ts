@@ -19,7 +19,7 @@ export class UserState {
   @Column({ name: 'no_of_characters_per_line', default: 80 })
   noOfCharactersPerLine: number;
 
-  @Column({ name: 'no_of_lines_per_page', default: 20 })
+  @Column({ name: 'no_of_lines_per_page', default: 10 })
   noOfLinesPerPage: number;
 
   @CreateDateColumn()
